@@ -91,6 +91,8 @@ module ZohoApiFieldUtils
     field = ApiUtils.string_to_symbol(f.to_s)
     @@module_fields[mod_name] << field if method_name?(field)
     @@module_fields[(mod_name.to_s + '_original_name').to_sym] << field
+    @@module_translation_fields[mod_name] ||= {}
+    @@module_translation_fields[mod_name][field.to_s] = f.to_s
   end
 
   def to_hash(xml_results, module_name)
