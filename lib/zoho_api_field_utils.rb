@@ -71,6 +71,9 @@ module ZohoApiFieldUtils
     v = n.text == 'null' ? nil : n.text
     r = record.merge({ k => v })
     r = r.merge({ :id => v }) if primary_key?(module_name, k)
+
+    @@module_translation_fields[module_name] ||= {}
+    @@module_translation_fields[module_name][k.to_s] = field_name.to_s
     r
   end
 
