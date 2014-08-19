@@ -37,7 +37,7 @@ module ZohoApi
       x = REXML::Document.new
       element = x.add_element module_name
       row = element.add_element 'row', { 'no' => '1' }
-      fields_values_hash.each_pair { |k, v| add_field(row, ApiUtils.symbol_to_string(k), v) }
+      fields_values_hash.each_pair { |k, v| add_field(row, k, v, module_name) }
       r = self.class.post(create_url(module_name, 'insertRecords'),
                           :query => { :newFormat => 1, :authtoken => @auth_token,
                                       :scope => 'crmapi', :xmlData => x, :wfTrigger => 'true' },
@@ -149,8 +149,8 @@ module ZohoApi
       x = REXML::Document.new
       leads = x.add_element related_module_fields[:related_module]
       row = leads.add_element 'row', { 'no' => '1' }
-      related_module_fields[:xml_data].each_pair { |k, v| add_field(row, ApiUtils.symbol_to_string(k), v) }
-  
+      related_module_fields[:xml_data].each_pair { |k, v| add_field(row, k, v, parent_module) }
+
       r = self.class.post(create_url("#{parent_module}", 'updateRelatedRecords'),
                           :query => { :newFormat => 1,
                                       :id => parent_record_id,
@@ -166,7 +166,7 @@ module ZohoApi
       x = REXML::Document.new
       contacts = x.add_element module_name
       row = contacts.add_element 'row', { 'no' => '1' }
-      fields_values_hash.each_pair { |k, v| add_field(row, ApiUtils.symbol_to_string(k), v) }
+      fields_values_hash.each_pair { |k, v| add_field(row, k, v, module_name) }
       r = self.class.post(create_url(module_name, 'updateRecords'),
                           :query => { :newFormat => 1, :authtoken => @auth_token,
                                       :scope => 'crmapi', :id => id,

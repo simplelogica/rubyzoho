@@ -1,23 +1,28 @@
 module ZohoApiFieldUtils
 
   @@module_fields = {}
+  @@module_translation_fields = {}
   @@users = []
 
-  def add_field(row, field, value)
+  def add_field(row, field, value, module_name)
     r = (REXML::Element.new 'FL')
-    adjust_tag_case(field)
-    r.attributes['val'] = adjust_tag_case(field)
+    r.attributes['val'] = adjust_tag_case(field.to_s, module_name)
     r.add_text("#{value}")
     row.elements << r
     row
   end
 
-  def adjust_tag_case(tag)
+  def adjust_tag_case(tag, module_name)
     return tag if tag == 'id'
     return tag.upcase if tag.downcase.rindex('id')
     u_tags = %w[SEMODULE]
     return tag.upcase if u_tags.index(tag.upcase)
-    tag
+
+    if @@module_translation_fields[module_name].blank?
+      tag
+    else
+      @@module_translation_fields[module_name][tag] || tag
+    end
   end
 
   def clean_field_name?(field_name)
